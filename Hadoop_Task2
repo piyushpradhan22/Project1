@@ -1,0 +1,1 @@
+hadoop jar capstone.jar com.infosys.capstone.Qualified /HDFS_1037786/EmployeeCDPCompletionStatus1.csv /hdfs_out_qualified

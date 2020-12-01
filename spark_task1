@@ -1,0 +1,2 @@
+#1. hadoop fs -put CustomerRefererenceData.csv /spark_1037786/
+#2. spark-shell

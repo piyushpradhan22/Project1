@@ -1,0 +1,40 @@
+var curr_dt  = new Date("2017-01-01")
+
+#2. db.contracts.find({enddt: {$gt: new Date(Date.now())}}).pretty() // db.contracts.find({enddt: {$gt: curr_dt}}).pretty()
+
+#3. db.roles.find({rolename:"audit"},{methods_entitled:1,_id:0}).pretty()
+
+#4. db.users.find({username : /^telecom/i}).pretty()
+
+#5 ----->
+db.installedbase.aggregate([
+    {"$group": {
+        _id : "$product",
+        noOfUsage : {$sum : 1}
+    }},
+    {"$sort": {noOfUsage: -1}},
+    {"$limit": 1}
+])
+
+6. ---->
+
+var d = curr_dt;
+d.setDate("01")
+d.setMonth(d.getMonth()+1)
+db.contracts.aggregate([ { $match : {enddt : {$lt : d}}}])
+
+// or
+
+var d = new Date(curr_dt.getTime() + 30*24*60*60000);
+db.contracts.aggregate([ { $match : {enddt : {$lt : d}}}])
+
+#7 . ------>
+
+db.customers.update({custname: "bigdatasoft"},{$set : {address : {city: "BrisbaneIL", country: "Australia"}}})
+
+#8. ----->
+db.roles.aggregate([{$unwind : "$methods_entitled" }, {$project : {methods_entitled : 1, _id:0} },{$out : "RoleMethods"}])
+
+#9 --- > db.userToProduct.update({_id : 114},{$addToSet : {product : "si-erp-SAP"}})
+
+

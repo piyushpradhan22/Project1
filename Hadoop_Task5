@@ -1,0 +1,10 @@
+#1 ----> sqoop import --connect jdbc:mysql://localhost/CertificationDB_1037786 --username mysqldb -P --table CertificationDetails --where "ComplexityLevel='Advanced'" --target-dir /Sqoop_data_1037786/CertificationDetails --m 1
+
+#2 ---> #1 ----> sqoop import --connect jdbc:mysql://localhost/CertificationDB_1037786 --username mysqldb -P --table CDPCompletionStatus --where "Result='Qualified'" --target-dir /Sqoop_data_1037786/CDPCompletionStatus --m 1
+
+#3. --->
+
+sqoop export --connect jdbc:mysql://localhost/CertificationDB_export_107786 --username mysqldb -P --table CertificationDetails --export-dir /HDFS_1037786/EmployeeCertificationDetails1.csv --m 1 --input-fields-terminated-by "," --input-lines-terminated-by "\n" --columns "CertificationOwner,CertificationCode,Certificationtitle,CompetencyDimension,CertficationType,ComplexityLevel"
+
+
+sqoop export --connect jdbc:mysql://localhost/CertificationDB_export_1037786 --username mysqldb -P --table CDPCompletionStatus --export-dir /Sqoop_data_1037786/CDPCompletionStatus --m 1 --input-fields-terminated-by "," --input-lines-terminated-by "\n" --columns "EmpNo,RoleCapability,EmpPUCode,SBUCode,CertificationCode,CertificationTitle,Competency,CertificationType,CerttificationGroup,ContactBasedProgram_Y_N,ExamDate,Onsite_Offshore,AttendanceStatus,Marks,Result,Status1,txtPlanCategory,SkillID1,Complexity"

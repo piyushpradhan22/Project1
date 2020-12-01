@@ -1,0 +1,20 @@
+package com.infosys
+
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+object Spark_Router_demo1 {
+  def main(args: Array[String]) {
+    // create Spark context with Spark configuration
+    val sc = new SparkContext(new SparkConf().setAppName("Spark Scala Application").setMaster("local"))
+    val rdd = sc.textFile("/home/piyush/Documents/Data_Big/CoreDatasets/RoutersData.txt");
+    val rdd2 = rdd.map(_.split("\t")).map(r => (r(8)+ ","+r(9)))
+    val rdd3 = rdd2.filter(_.startsWith("ERROR"))
+    val R1Errs = rdd3.map(_.contains("RTR1")).count()
+    val R2Errs = rdd3.map(_.contains("RTR2")).count()
+    val outarray = Array("Router 1 contains "+R1Errs ,"Router 2 contains "+R2Errs)
+    val outrdd = sc.parallelize(outarray)
+    outrdd.collect.foreach(println)
+    outrdd.saveAsTextFile("/home/piyush/Documents/spark_out/out1")
+  }
+}

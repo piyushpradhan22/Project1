@@ -1,0 +1,64 @@
+Task#1
+1.MySQL--->
+create database CertificationDB_1037786;
+
+use CertificationDB_1037786;
+
+create table CertificationDetails (CertificationOwner varchar(20), CertificationCode varchar(20), Certificationtitle varchar(80), 
+CompetencyDimension varchar(15), CertficationType varchar(15), ComplexityLevel varchar(15));
+
+create table CDPCompletionStatus (EmpNo int, RoleCapability varchar(80), EmpPUCode varchar(15), SBUCode varchar(30), CertificationCode varchar(100),
+CertificationTitle varchar(100), Competency varchar(20), CertificationType varchar(20), CerttificationGroup varchar(20),
+ContactBasedProgram_Y_N varchar(20), ExamDate varchar(30), Onsite_Offshore varchar(20), AttendanceStatus varchar(20),
+Marks int, Result varchar(20), Status1 varchar(20), txtPlanCategory varchar(20), SkillID1 int, Complexity varchar(20)); 
+
+show tables;
+
+2.HADOOP--->
+cd /home/piyush/project
+hadoop fs -mkdir /HDFS_1037786
+hadoop fs -put EmployeeCDPCompletionStatus1.csv /HDFS_1037786
+hadoop fs -put EmployeeCertificationDetails1.csv /HDFS_1037786
+
+HIVE--->
+create table CertificationDetails (CertificationOwner varchar(20), CertificationCode varchar(20), Certificationtitle varchar(80), 
+CompetencyDimension varchar(15), CertficationType varchar(15), ComplexityLevel varchar(15)) 
+row format delimited
+fields terminated by ',' ;
+
+load data inpath '/HDFS_1037786/EmployeeCertificationDetails1.csv' into table CertificationDetails;
+
+create table CDPCompletionStatus (EmpNo int, RoleCapability varchar(80), EmpPUCode varchar(15), SBUCode varchar(30), CertificationCode varchar(100),
+CertificationTitle varchar(100), Competency varchar(20), CertificationType varchar(20), CerttificationGroup varchar(20),
+ContactBasedProgram_Y_N varchar(20), ExamDate varchar(30), Onsite_Offshore varchar(20), AttendanceStatus varchar(20),
+Marks int, Result varchar(20), Status1 varchar(20), txtPlanCategory varchar(20), SkillID1 int, Complexity varchar(20))
+row format delimited
+fields terminated by ',' ;
+
+load data inpath '/HDFS_1037786/EmployeeCDPCompletionStatus1.csv' into table CDPCompletionStatus;
+
+create table CDPCompletionStatus (EmpNo int, RoleCapability varchar(80), EmpPUCode varchar(15), SBUCode varchar(30), CertificationCode varchar(100),
+CertificationTitle varchar(100), Competency varchar(20), CertificationType varchar(20), CerttificationGroup varchar(20),
+ContactBasedProgram_Y_N varchar(20), ExamDate varchar(30), Onsite_Offshore varchar(20), AttendanceStatus varchar(20),
+Marks int, Result varchar(20), Status1 varchar(20), txtPlanCategory varchar(20), SkillID1 int, Complexity varchar(20))
+
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar"="\"",
+"escapeChar"="\\"
+)
+
+3.SQOOP--->
+sqoop export --connect jdbc:mysql://localhost/CertificationDB_1037786 --username mysqldb -P --table CertificationDetails --export-dir /HDFS_1037786/EmployeeCertificationDetails1.csv --m 1 --input-fields-terminated-by "," --input-lines-terminated-by "\n" --columns "CertificationOwner,CertificationCode,Certificationtitle,CompetencyDimension,CertficationType,ComplexityLevel"
+
+sqoop export --connect jdbc:mysql://localhost/CertificationDB_1037786 --username mysqldb -P --table CDPCompletionStatus --export-dir /HDFS_1037786/EmployeeCDPCompletionStatus1.csv --m 1 --input-fields-terminated-by "," --input-lines-terminated-by "\n" --optionally-enclosed-by "\"" --columns "EmpNo,RoleCapability,EmpPUCode,SBUCode,CertificationCode,CertificationTitle,Competency,CertificationType,CerttificationGroup,ContactBasedProgram_Y_N,ExamDate,Onsite_Offshore,AttendanceStatus,Marks,Result,Status1,txtPlanCategory,SkillID1,Complexity"
+
+
+
+4.SQOOP--->
+sqoop import --connect jdbc:mysql://localhost/CertificationDB_1037786 --username mysqldb -P --table CertificationDetails --target-dir /Certification_1037786/CertificationDetails --m 1 --columns "CertificationOwner,CertificationCode,Certificationtitle,CompetencyDimension,CertficationType,ComplexityLevel"
+sqoop import --connect jdbc:mysql://localhost/CertificationDB_1037786 --username mysqldb -P --table CDPCompletionStatus --target-dir /Certification_1037786/CDPCompletionStatus --m 1 --columns "EmpNo,RoleCapability,EmpPUCode,SBUCode,CertificationCode,CertificationTitle,Competency,CertificationType,CerttificationGroup,ContactBasedProgram_Y_N,ExamDate,Onsite_Offshore,AttendanceStatus,Marks,Result,Status1,txtPlanCategory,SkillID1,Complexity"
+
+5.HADOOP--->
+hadoop fs -cp /Certification_1037786 /Backup_1037786
